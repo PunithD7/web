@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Online Food Service</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+
+        h1 {
+            text-align: center;
+            color: #e67e22;
+        }
+
+        form label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #e67e22;
+            color: white;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #d35400;
+        }
+
+        #bill {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Online Food Order</h1>
+    <form id="foodForm">
+        <label for="fname">First Name:</label>
+        <input type="text" id="fname" required>
+        <label for="lname">Last Name:</label>
+        <input type="text" id="lname" required>
+        <label for="email">Email ID:</label>
+        <input type="email" id="email" required>
+        <label for="phone">Phone Number:</label>
+        <input type="text" id="phone" pattern="[0-9]{10}" placeholder="10-digit number" required>
+        <label for="food">Select Food Item:</label>
+        <select id="food" required>
+            <option value="" disabled selected>Select a food item</option>
+            <option value="Pizza" data-price="12">Pizza - $12</option>
+            <option value="Burger" data-price="8">Burger - $8</option>
+            <option value="Pasta" data-price="10">Pasta - $10</option>
+            <option value="Salad" data-price="6">Salad - $6</option>
+            <option value="Sandwich" data-price="5">Sandwich - $5</option>
+        </select>
+        <label for="quantity">Quantity:</label>
+        <input type="text" id="quantity" required>
+        <button type="submit">Generate Bill</button>
+    </form>
+    <div id="bill"></div>
+    <script>
+        document.getElementById("foodForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            const fname = document.getElementById("fname").value.trim();
+            const lname = document.getElementById("lname").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const foodSelect = document.getElementById("food");
+            const foodItem = foodSelect.value;
+            const foodPrice = parseFloat(foodSelect.options[foodSelect.selectedIndex].getAttribute("data-price"));
+            const quantity = parseInt(document.getElementById("quantity").value);
+            if (!quantity || quantity <= 0) {
+                alert("Please enter a valid quantity.");
+                return;
+            }
+            const total = foodPrice * quantity;
+            const bill = `
+Customer Name : ${fname} ${lname}
+Email : ${email}
+Phone : ${phone}
+Food Item : ${foodItem}
+Price per Item: $${foodPrice.toFixed(2)}
+Quantity : ${quantity}
+-----------------------------
+Total Bill : $${total.toFixed(2)}
+Thank you for ordering with us!
+`; document.getElementById("bill").textContent = bill;
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tourist Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .section {
+            margin-top: 30px;
+        }
+
+        .advice {
+            font-size: 1.2em;
+            color: teal;
+            margin-top: 10px;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Welcome to Explorer’s Haven</h1>
+    <div class="section" id="weather-section">
+        <h2>Current Weather</h2>
+        <div id="weather-info">Loading weather...</div>
+        <div id="advice" class="advice"></div>
+    </div>
+    <div class="section" id="news-section">
+        <h2>Top News Headlines</h2>
+        <ul id="news-list">
+            <li>Loading news...</li>
+        </ul>
+    </div>
+    <script>
+        async function fetchWeather() {
+            // Coordinates for New Delhi, India (change as needed)
+            const url = 'https://api.open-meteo.com/v1/forecast?latitude=28.6&longitude=77.2&current_weather=true';
+            const res = await fetch(url);
+            const data = await res.json();
+            const w = data.current_weather;
+            const info = `Temperature: ${w.temperature}°C, Wind Speed: ${w.windspeed} m/s, Weather Code: ${w.weathercode}`;
+            document.getElementById('weather-info').innerText = info;
+            const code = w.weathercode;
+            const advice = (code === 0 || code === 1 || code === 2 || code === 3)
+                ? "It's sunny—keep a hat handy!"
+                : (code >= 51 && code <= 67) || code >= 95
+                    ? "Rainy or stormy—bring an umbrella!"
+                    : "Weather is moderate—plan accordingly.";
+            document.getElementById('advice').innerText = advice;
+        }
+        async function fetchNews() {
+            const key = 'YOUR_NEWSDATA_API_KEY';
+            const url = `https://newsdata.io/api/1/latest?apikey=${key}&country=us`;
+            const res = await fetch(url);
+            const data = await res.json();
+            const list = document.getElementById('news-list');
+            list.innerHTML = '';
+            (data.results || []).slice(0, 5).forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="${item.link}" target="_blank">${item.title}</a>`;
+                list.appendChild(li);
+            });
+        }
+        fetchWeather();
+        fetchNews();
+    </script>
+</body>
+
+</html>

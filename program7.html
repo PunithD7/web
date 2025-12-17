@@ -1,0 +1,51 @@
+!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Keyboard Event example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .output {
+            margin-top: 60px;
+            font-size: 1.5rem;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Press Any Key</h1>
+    <div class="output">
+        <div><span class="label">Lowercase:</span> <span id="lowercase">-</span></div>
+        <div><span class="label">Uppercase:</span> <span id="uppercase">-</span></div>
+    </div>
+    <script>
+        document.addEventListener('keydown', function (event) {
+            const key = event.key;
+            // Display lowercase and uppercase
+            document.getElementById('lowercase').textContent = key.toLowerCase();
+            document.getElementById('uppercase').textContent = key.toUpperCase();
+        });
+    </script>
+</body>
+
+</html>

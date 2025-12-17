@@ -1,0 +1,171 @@
+public/index.html
+(make sure this exists, otherwise React won’t run)
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>React Calculator</title>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+</html>
+src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+<React.StrictMode>
+    <App />
+</React.StrictMode>
+);
+src/App.js
+import React from 'react';
+import Calculator from './Calculator';
+import './App.css'; // for styling
+function App() {
+return (
+<div className="App">
+    <Calculator />
+</div>
+);
+}
+export default App;
+src/Calculator.js
+(you already wrote this, keeping exactly the same)
+import React, { useState } from 'react';
+function Calculator() {
+const [displayValue, setDisplayValue] = useState('0');
+const [firstOperand, setFirstOperand] = useState(null);
+const [operator, setOperator] = useState(null);
+const [waitingForSecondOperand, setWaitingForSecondOperand] = useState(false);
+const inputDigit = (digit) => {
+if (waitingForSecondOperand) {
+setDisplayValue(String(digit));
+setWaitingForSecondOperand(false);
+} else {
+setDisplayValue(displayValue === '0' ? String(digit) : displayValue + digit);
+}
+};
+const inputDecimal = () => {
+if (waitingForSecondOperand) {
+setDisplayValue('0.');
+setWaitingForSecondOperand(false);
+return;
+}
+if (!displayValue.includes('.')) {
+setDisplayValue(displayValue + '.');
+}
+};
+const clearDisplay = () => {
+setDisplayValue('0');
+setFirstOperand(null);
+setOperator(null);
+setWaitingForSecondOperand(false);
+};
+const performOperation = (nextOperator) => {
+const inputValue = parseFloat(displayValue);
+if (firstOperand === null && !isNaN(inputValue)) {
+setFirstOperand(inputValue);
+} else if (operator) {
+const result = calculate(firstOperand, inputValue, operator);
+setDisplayValue(String(result));
+setFirstOperand(result);
+}
+setWaitingForSecondOperand(true);
+setOperator(nextOperator);
+};
+const calculate = (firstNum, secondNum, op) => {
+if (op === '+') return firstNum + secondNum;
+if (op === '-') return firstNum - secondNum;
+if (op === '*') return firstNum * secondNum;
+if (op === '/') return firstNum / secondNum;
+return secondNum; // For "="
+};
+return (
+<div className="calculator">
+    <div className="calculator-display">{displayValue}</div>
+    <div className="calculator-buttons">
+        <button onClick={()=> inputDigit(7)}>7</button>
+        <button onClick={()=> inputDigit(8)}>8</button>
+        <button onClick={()=> inputDigit(9)}>9</button>
+        <button className="operator" onClick={()=> performOperation('/')}>&divide;</button>
+        <button onClick={()=> inputDigit(4)}>4</button>
+        <button onClick={()=> inputDigit(5)}>5</button>
+        <button onClick={()=> inputDigit(6)}>6</button>
+        <button className="operator" onClick={()=> performOperation('*')}>&times;</button>
+        <button onClick={()=> inputDigit(1)}>1</button>
+        <button onClick={()=> inputDigit(2)}>2</button>
+        <button onClick={()=> inputDigit(3)}>3</button>
+        <button className="operator" onClick={()=> performOperation('-')}>-</button>
+        <button onClick={()=> inputDigit(0)}>0</button>
+        <button onClick={inputDecimal}>.</button>
+        <button className="clear" onClick={clearDisplay}>C</button>
+        <button className="operator" onClick={()=> performOperation('+')}>+</button>
+        <button className="equal-sign operator" onClick={()=> performOperation('=')}>=</button>
+    </div>
+</div>
+);
+}
+export default Calculator;
+src/App.css
+(your styling is great, keeping as-is)
+.calculator {
+width: 300px;
+margin: 50px auto;
+border: 1px solid #ccc;
+border-radius: 5px;
+box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+.calculator-display {
+background-color: #333;
+color: #fff;
+font-size: 2.5em;
+padding: 20px;
+text-align: right;
+border-top-left-radius: 5px;
+border-top-right-radius: 5px;
+}
+.calculator-buttons {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 1px;
+}
+.calculator-buttons button {
+background-color: #f0f0f0;
+border: none;
+padding: 20px;
+font-size: 1.5em;
+cursor: pointer;
+transition: background-color 0.2s;
+}
+.calculator-buttons button:hover {
+background-color: #e0e0e0;
+}
+.calculator-buttons .operator {
+background-color: #f79e2c;
+color: #fff;
+}
+.calculator-buttons .operator:hover {
+background-color: #e68a1c;
+}
+.calculator-buttons .clear {
+background-color: #d9534f;
+color: #fff;
+}
+.calculator-buttons .clear:hover {
+background-color: #c9302c;
+}
+.calculator-buttons .equal-sign {
+grid-column: span 2;
+background-color: #5cb85c;
+color: #fff;
+}
+.calculator-buttons .equal-sign:hover {
+background-color: #4cae4c;
+}
